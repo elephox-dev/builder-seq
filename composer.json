@@ -16,7 +16,8 @@
     "ext-curl": "*"
   },
   "require-dev": {
-    "friendsofphp/php-cs-fixer": "dev-master"
+    "friendsofphp/php-cs-fixer": "dev-master",
+    "elephox/templar": "dev-main"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,

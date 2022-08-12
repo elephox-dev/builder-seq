@@ -1,0 +1,7 @@
+{
+  "seq": {
+    "endpoint": "http://localhost:5341/",
+    "flushTimeoutMinutes": 1,
+    "maxBufferedMessages": 4
+  }
+}
