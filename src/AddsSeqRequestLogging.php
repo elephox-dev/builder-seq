@@ -16,9 +16,8 @@ trait AddsSeqRequestLogging {
 	public function addSeqRequestLogging(): void {
 		$this->addSeq();
 
-		if ($this->getServices()->has(LoggingMiddleware::class)) {
-			$middleware = $this->getServices()->requireService(LoggingMiddleware::class);
-		} else {
+		$middleware = $this->getServices()->getService(LoggingMiddleware::class);
+		if ($middleware === null) {
 			$middleware = $this->getServices()->resolver()->instantiate(LoggingMiddleware::class);
 		}
 

@@ -6,6 +6,7 @@ namespace Elephox\Builder\Seq;
 use Elephox\Logging\Contract\LogLevel;
 use Elephox\Logging\Contract\Sink;
 use Elephox\Logging\SinkCapability;
+use JsonException;
 
 class SeqHttpSink implements Sink {
 	public function __construct(
@@ -16,6 +17,9 @@ class SeqHttpSink implements Sink {
 		return false;
 	}
 
+	/**
+	 * @throws JsonException
+	 */
 	public function write(LogLevel $level, string $message, array $context): void {
 		$data = [
 			'@t' => date('c'),

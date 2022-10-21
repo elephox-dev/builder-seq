@@ -16,7 +16,7 @@ trait AddsSeq {
 	public function addSeq(): void {
 		$this->getServices()->addSingleton(
 			SeqConfiguration::class,
-			implementationFactory: static function (Configuration $config) {
+			factory: static function (Configuration $config) {
 				$endpoint = $config['seq:endpoint'] ?? null;
 				if (!is_string($endpoint)) {
 					throw new ConfigurationException(

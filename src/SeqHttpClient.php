@@ -6,6 +6,7 @@ namespace Elephox\Builder\Seq;
 use CurlHandle;
 use DateTime;
 use DateTimeInterface;
+use JsonException;
 use LogicException;
 use RuntimeException;
 
@@ -59,6 +60,9 @@ class SeqHttpClient {
 		return $handle;
 	}
 
+	/**
+	 * @throws JsonException
+	 */
 	public function send(mixed $data): void
 	{
 		$this->buffer[] = $data;
@@ -75,6 +79,9 @@ class SeqHttpClient {
 			count($this->buffer) >= $this->configuration->maxNumBufferedMessages;
 	}
 
+	/**
+	 * @throws JsonException
+	 */
 	public function flush(): void {
 		$body = "";
 		while ($data = array_shift($this->buffer)) {
