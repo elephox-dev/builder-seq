@@ -1,0 +1,22 @@
+{
+    "name": "elephox/builder-seq",
+    "description": "Adds an Seq logging sink.",
+    "type": "library",
+    "require": {
+        "php": "^8.2",
+        "elephox/framework": "dev-develop"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Elephox\\BuilderSeq\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Ricardo Boss",
+            "email": "contact@ricardoboss.de"
+        }
+    ],
+    "minimum-stability": "dev"
+}
