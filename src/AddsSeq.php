@@ -6,22 +6,43 @@ namespace Elephox\Builder\Seq;
 use Elephox\Configuration\Contract\Configuration;
 use Elephox\DI\Contract\ServiceCollection;
 use Elephox\Http\Url;
+use Elephox\Http\UrlScheme;
 use Elephox\Logging\MultiSinkLogger;
 use Elephox\Web\ConfigurationException;
+use LogicException;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
+use RicardoBoss\PhpSeq\Contract\SeqClient;
+use RicardoBoss\PhpSeq\Contract\SeqLogger as SeqLoggerContract;
+use RicardoBoss\PhpSeq\SeqHttpClient;
+use RicardoBoss\PhpSeq\SeqHttpClientConfiguration;
+use RicardoBoss\PhpSeq\SeqLogger;
+use RicardoBoss\PhpSeq\SeqLoggerConfiguration;
 
 trait AddsSeq {
 	abstract protected function getServices(): ServiceCollection;
 
 	public function addSeq(): void {
+		if (!$this->getServices()->has(RequestFactoryInterface::class)) {
+			throw new LogicException("No RequestFactoryInterface service available");
+		}
+
+		if (!$this->getServices()->has(StreamFactoryInterface::class)) {
+			throw new LogicException("No StreamFactoryInterface service available");
+		}
+
+		if (!$this->getServices()->has(ClientInterface::class)) {
+			throw new LogicException("No ClientInterface service available");
+		}
+
 		$this->getServices()->addSingleton(
-			SeqConfiguration::class,
+			SeqHttpClientConfiguration::class,
 			factory: static function (Configuration $config) {
-				$endpoint = $config['seq:endpoint'] ?? null;
-				if (!is_string($endpoint)) {
-					throw new ConfigurationException(
-						'Seq configuration error: "seq:endpoint" must be a string.'
-					);
+				$endpoint = $config['seq:client:host'] ?? null;
+				if ($endpoint === null) {
+					throw new ConfigurationException("Configuration 'seq:client:host' is required for Seq");
 				}
 
 				$url = Url::fromString($endpoint)
@@ -29,25 +50,33 @@ trait AddsSeq {
 					->path('/api/events/raw')
 					->get();
 
-				$apiKey = $config['seq:apiKey'] ?? null;
-				$flushTimeout = $config['seq:flushTimeoutMinutes'] ?? SeqConfiguration::DEFAULT_FLUSH_TIMEOUT_MINUTES;
-				$maxBufferedMessages = $config['seq:maxBufferedMessages'] ?? SeqConfiguration::DEFAULT_MAX_BUFFERED_MESSAGES_COUNT;
+				$apiKey = $config['seq:client:apiKey'] ?? null;
+				$maxRetries = $config['seq:client:maxRetries'] ?? 3;
 
-				return new SeqConfiguration((string)$url, $apiKey, $flushTimeout, $maxBufferedMessages);
+				return new SeqHttpClientConfiguration((string)$url, $apiKey, $maxRetries);
+			},
+		);
+
+		$this->getServices()->addSingleton(
+			SeqLoggerConfiguration::class,
+			factory: static function (Configuration $config) {
+				$backlogLimit = $config['seq:logger:backlogLimit'] ?? 10;
+				$globalContext = $config['seq:logger:globalContext'] ?? null;
+
+				return new SeqLoggerConfiguration($backlogLimit, $globalContext);
 			}
 		);
 
-		$this->getServices()->addSingleton(SeqHttpClient::class);
-		$this->getServices()->addSingleton(SeqHttpSink::class);
-		$this->getServices()->addSingleton(LoggerInterface::class, MultiSinkLogger::class);
-
-		$logger = $this->getServices()->requireService(LoggerInterface::class);
-		if ($logger instanceof MultiSinkLogger) {
-			$logger->addSink($this->getServices()->requireService(SeqHttpSink::class));
-		} else {
-			$logger->warning(
-				"Cannot automatically add Seq sink to logger because it is not a MultiSinkLogger."
-			);
-		}
+		$this->getServices()->addSingleton(SeqClient::class, SeqHttpClient::class);
+		$this->getServices()->addSingleton(SeqLoggerContract::class, SeqLogger::class);
+		$this->getServices()->addSingleton(SeqLoggerSink::class);
+		$this->getServices()->tryAddSingleton(
+			LoggerInterface::class,
+			factory: static function (SeqLoggerSink $seqSink): MultiSinkLogger {
+				$logger = new MultiSinkLogger();
+				$logger->addSink($seqSink);
+				return $logger;
+			},
+		);
 	}
 }

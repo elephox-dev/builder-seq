@@ -1,7 +1,12 @@
 {
   "seq": {
-    "endpoint": "http://localhost:5341/",
-    "flushTimeoutMinutes": 1,
-    "maxBufferedMessages": 4
+    "client": {
+      "host": "http://localhost:5341"
+    },
+    "logger": {
+      "globalContext": {
+        "project": "example"
+      }
+    }
   }
 }

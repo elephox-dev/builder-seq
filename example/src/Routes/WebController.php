@@ -16,6 +16,7 @@ use Elephox\Templar\Foundation\Container;
 use Elephox\Templar\Foundation\FullscreenBody;
 use Elephox\Templar\Foundation\FullscreenDocument;
 use Elephox\Templar\Foundation\Head;
+use Elephox\Templar\Foundation\Hyperlink;
 use Elephox\Templar\Foundation\Link;
 use Elephox\Templar\Foundation\Text;
 use Elephox\Templar\Foundation\Title;
@@ -26,22 +27,23 @@ use Elephox\Templar\Widget;
 use Elephox\Web\Routing\Attribute\Controller;
 use Elephox\Web\Routing\Attribute\Http\Any;
 use Elephox\Web\Routing\Attribute\Http\Get;
+use ErrorException;
 
-#[Controller("")]
+#[Controller]
 class WebController {
 	/**
-	 * @throws \ErrorException
+	 * @throws ErrorException
 	 */
 	#[Get]
 	public function index(): ResponseBuilder {
-		return Response::build()->responseCode(ResponseCode::OK)->htmlBody(
+		return Response::build()->ok()->htmlBody(
 			(new Templar())->render($this->getContent())
 		);
 	}
 
 	#[Get('style.css')]
 	public function style(): ResponseBuilder {
-		return Response::build()->responseCode(ResponseCode::OK)->htmlBody(
+		return Response::build()->ok()->htmlBody(
 			(new Templar())->renderStyle($this->getContent()),
 			MimeType::TextCss
 		);
@@ -73,6 +75,10 @@ class WebController {
 								new Text("This request was logged"),
 								new Text("Take a look at your Seq events."),
 							),
+							new Box(
+								new Text("Generate more logs"),
+								new Hyperlink("Reload page", "/?random=" . uniqid()),
+							),
 						],
 					),
 					padding: EdgeInsets::symmetric(
@@ -81,14 +87,6 @@ class WebController {
 					),
 				),
 			),
-		);
-	}
-
-	#[Any('regex:.*', -1)]
-	public function notFound(): ResponseBuilder {
-		return Response::build()->responseCode(ResponseCode::NotFound)->fileBody(
-			APP_ROOT . '/views/error404.html',
-			MimeType::TextHtml
 		);
 	}
 }

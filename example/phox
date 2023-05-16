@@ -6,37 +6,20 @@ require_once '../vendor/autoload.php';
 const APP_ROOT = __DIR__;
 
 require_once APP_ROOT . '/src/Routes/WebController.php';
-require_once APP_ROOT . '/src/Commands/EchoCommand.php';
 
-use App\Commands\EchoCommand;
-use App\Routes\WebController;
-use Elephox\Builder\Seq\AddsSeq;
 use Elephox\Console\ConsoleApplicationBuilder;
-use Elephox\DI\Contract\ServiceCollection;
 use Elephox\Support\Contract\ExceptionHandler;
-use Elephox\Web\Routing\Contract\Router;
-use Elephox\Web\Routing\RequestRouter;
+use Elephox\Web\Commands\ServeCommand;
 
 // Create the custom builder
 class ConsoleBuilder extends ConsoleApplicationBuilder {
-	use AddsSeq;
 }
 
 // Build console application
 $builder = ConsoleBuilder::create();
 $builder->addLogging();
-$builder->addSeq();
 
-// Load app commands
-$builder->commands->loadFromClass(EchoCommand::class);
-
-// Add the request router, so we can use it in commands
-$builder->services->addSingleton(Router::class, RequestRouter::class, function (ServiceCollection $services): RequestRouter {
-	return (new RequestRouter($services))->loadFromClass(WebController::class);
-});
-
-// Load commands
-$builder->commands->loadFromNamespace("Elephox\\Web\\Commands");
+$builder->commands->add(ServeCommand::class);
 
 $app = $builder->build();
 try {
