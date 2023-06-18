@@ -774,16 +774,16 @@
         },
         {
             "name": "ricardoboss/php-seq",
-            "version": "v1.1.0",
+            "version": "v1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ricardoboss/php-seq.git",
-                "reference": "3c8893269800949064e056420c9b11aa332c7247"
+                "reference": "dc8302afcacccb2ebb592a1de2eea64e06008688"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ricardoboss/php-seq/zipball/3c8893269800949064e056420c9b11aa332c7247",
-                "reference": "3c8893269800949064e056420c9b11aa332c7247",
+                "url": "https://api.github.com/repos/ricardoboss/php-seq/zipball/dc8302afcacccb2ebb592a1de2eea64e06008688",
+                "reference": "dc8302afcacccb2ebb592a1de2eea64e06008688",
                 "shasum": ""
             },
             "require": {
@@ -815,9 +815,9 @@
             ],
             "support": {
                 "issues": "https://github.com/ricardoboss/php-seq/issues",
-                "source": "https://github.com/ricardoboss/php-seq/tree/v1.1.0"
+                "source": "https://github.com/ricardoboss/php-seq/tree/v1.1.1"
             },
-            "time": "2023-06-18T10:22:56+00:00"
+            "time": "2023-06-18T13:47:54+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",

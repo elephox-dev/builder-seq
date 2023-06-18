@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Elephox\BuilderSeq;
+namespace Elephox\Builder\Seq;
 
 use Elephox\Logging\Contract\LogLevel;
 use Elephox\Logging\Contract\Sink;
