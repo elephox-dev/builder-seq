@@ -4,7 +4,8 @@
     "type": "library",
     "require": {
         "php": "^8.2",
-        "elephox/framework": "dev-develop"
+        "elephox/framework": "dev-develop",
+        "ricardoboss/php-seq": "^1.1"
     },
     "license": "MIT",
     "autoload": {
@@ -18,5 +19,6 @@
             "email": "contact@ricardoboss.de"
         }
     ],
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
