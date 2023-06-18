@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c20c55461818b6721144b29500667831",
+    "content-hash": "cbaf095afc560e4f075a479c083f6698",
     "packages": [
         {
             "name": "elephox/framework",
