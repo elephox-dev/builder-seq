@@ -19,6 +19,6 @@ readonly class SeqSink implements Sink
 	}
 
 	public function write(LogLevel $level, string $message, ?array $context): void {
-		$this->logger->log($level, $message, $context);
+		$this->logger->log($level->getName(), $message, $context);
 	}
 }
